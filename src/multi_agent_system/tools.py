@@ -22,12 +22,28 @@ def web_search(query: str) -> str:
 
     for r in results["results"]:
         out.append(
-            f"Title: {r['title']}\n URL: {r['url']}\n Snippet: {r['content'][:300]}\n"
+            f"Title: {r['title']}\n" 
+            f"URL: {r['url']}\n"
+            f" Snippet: {r['content'][:300]}\n"
         )
 
-    return "\n------\n".join(out)   
+    return "\n-----------------\n".join(out)   
 
-print(web_search.invoke("latest bihar news")) 
+
+@tool
+def scrape_url(url: str) -> str:
+    """Scrape and return clean text content from a given URL for deeper reading."""
+    try:
+        res = requests.get(url, timeout=8, headers={"User-Agent": "Mozilla/5.0"})
+        soup = BeautifulSoup(res.text, "html.parser")
+        for tag in soup(["script", "style", "nav", "footer"]):
+            tag.decompose()
+
+        return soup.get_text(separator=" ", strip=True)[:3000]
+    except Exception as e:
+        return f"could not scrape URL: {str(e)}"
+
+print(scrape_url.invoke("https://www.aljazeera.com/news/2026/10/16/indian-police-launch-new-delhi-clampdown-for-cockroach-party-rally"))        
 
 
 
