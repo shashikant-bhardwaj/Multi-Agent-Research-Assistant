@@ -13,7 +13,7 @@ load_dotenv()
 llm = ChatGroq(model="openai/gpt-oss-120b", api_key=os.getenv("GROQ_API_KEY"))
 
 #first agent
-def biuld_search_agent():
+def build_search_agent():
     return create_agent(
         model = llm,
         tools = [web_search]
@@ -28,4 +28,51 @@ def build_reader_agent():
 
 #writer chain
 
-writer_prompt = ChatPromptTemplate
+writer_prompt = ChatPromptTemplate.from_messages([
+    ("system", "you are an expert research writer. write clear, structured and insightful reports."),
+    ("human", """write a detailed research report on the topic below.
+    
+    Topic: {topic}
+    
+    Research Gathered:
+    {research}
+    
+    Structure the report as:
+    - Introduction
+    - Key findings (minimum 3 well explained points)
+    - Conclusion
+    - Source (list all URLs found in the research)
+    
+    Be detailed, factual and professional.""")
+])
+
+writer_chain = writer_prompt | llm | StrOutputParser()
+
+# critic chain
+
+critic_prompt = ChatPromptTemplate.from_messages([
+    ("system", "you are a sharp and constructive research critic. Be honest and specific.")
+    ("human", """Review the research report  below and evaluate it strictly.
+    
+    Report:
+    {report}
+    
+    Respond in exact format:
+    
+    Score: X/10
+    
+    Strengths:
+    - ...
+    - ...
+    
+    Areas to Improve:
+    - ...
+    - ...
+    
+    One line verdict
+    ...""")
+])
+
+
+critic_chain = critic_prompt | llm | StrOutputParser()
+
