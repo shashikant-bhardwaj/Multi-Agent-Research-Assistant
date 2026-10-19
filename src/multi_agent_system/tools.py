@@ -43,7 +43,7 @@ def scrape_url(url: str) -> str:
     except Exception as e:
         return f"could not scrape URL: {str(e)}"
 
-print(scrape_url.invoke("https://www.aljazeera.com/news/2026/10/16/indian-police-launch-new-delhi-clampdown-for-cockroach-party-rally"))        
+      
 
 
 

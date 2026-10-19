@@ -1,7 +1,7 @@
 from langchain.agents import create_agent
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from .tools import web_search, scrape_url
+from tools import web_search, scrape_url
 import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
@@ -51,7 +51,7 @@ writer_chain = writer_prompt | llm | StrOutputParser()
 # critic chain
 
 critic_prompt = ChatPromptTemplate.from_messages([
-    ("system", "you are a sharp and constructive research critic. Be honest and specific.")
+    ("system", "you are a sharp and constructive research critic. Be honest and specific."),
     ("human", """Review the research report  below and evaluate it strictly.
     
     Report:
